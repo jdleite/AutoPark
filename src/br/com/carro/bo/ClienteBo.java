@@ -12,8 +12,11 @@ public class ClienteBo {
 	public ClienteDao dao = new ClienteDao();
 	Connection con = ConexaoFactory.getConnection();
 
-	public void gravar(Cliente cliente,Veiculo vei, Connection con) throws SQLException {
-		dao.cadastrarCliente(cliente,vei, con);
+	public void gravar(Cliente cliente, Connection con) throws SQLException {
+		dao.cadastrarCliente(cliente,con);
+	}
+	public int buscarCodigo() throws SQLException{
+		return dao.buscarCodigo();
 	}
 
 }

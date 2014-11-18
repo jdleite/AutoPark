@@ -3,7 +3,10 @@ package br.com.carro.dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 
 import br.com.carro.bean.Cliente;
 import br.com.carro.bean.Veiculo;
@@ -17,7 +20,7 @@ public class ClienteDao {
 	}
 	
 	/*cadasta o cliente no banco de dados*/
-	public void cadastrarCliente(Cliente cliente,Veiculo vei,Connection con) throws SQLException{
+	public void cadastrarCliente(Cliente cliente,Connection con) throws SQLException{
 		String sql = "INSERT INTO T_ESTACI_CLIENTE (ID_CLIENTE,NOME,DT_NASCIMENTO,SEXO) VALUES (SQ_CLIENTE.NEXTVAL,?,?,?)";
 	   try{
 		   con.setAutoCommit(false);
@@ -38,5 +41,28 @@ public class ClienteDao {
 	   }
 	
 
+	}
+	
+	public int buscarCodigo()throws SQLException{
+		int id = 0;
+		PreparedStatement estruturaFornecedor = 
+				this.conexao.prepareStatement("select ID_CLIENTE from T_ESTACI_CLIENTE");
+		ResultSet resultadoDados = estruturaFornecedor.executeQuery();
+		   
+		Cliente cli = new Cliente();
+			while(resultadoDados.next()){
+			 cli.setId_Cliente(resultadoDados.getInt("id_cliente"));			 
+			 
+			}		
+			 id = cli.getId_Cliente();
+			resultadoDados.close();
+			estruturaFornecedor.close();
+		
+			
+			
+		
+
+		return id;
+		
 	}
 }

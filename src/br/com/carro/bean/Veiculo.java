@@ -14,14 +14,19 @@ public class Veiculo {
 	}
 	
 	
-	public Veiculo(String tipo, String placa,
-			String marca, String cor) {
+	
+
+	public Veiculo(int idCliente, String tipo, String placa, String marca,
+			String cor) {
 		super();
+		this.idCliente = idCliente;
 		this.tipo = tipo;
 		this.placa = placa;
 		this.marca = marca;
 		this.cor = cor;
 	}
+
+
 
 
 	public int getIdVeiculo() {

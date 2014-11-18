@@ -11,8 +11,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import br.com.carro.bean.Cliente;
+import br.com.carro.bean.Veiculo;
 import br.com.carro.bo.ClienteBo;
 import br.com.carro.conexao.ConexaoFactory;
+import br.com.carro.dao.ClienteDao;
 import br.com.carro.dateUtils.DateUtils;
 @WebServlet("/estacioServlet")
 public class EstacionamentoServlet extends HttpServlet {
@@ -33,9 +35,12 @@ public class EstacionamentoServlet extends HttpServlet {
 		case "cadastrar":
 			cadastrar(req);
 			pagina = "cadastro.jsp";
+			break;		
+		case "buscarCodigo":
+			buscarCodigo(req);
+			pagina = "cadastro.jsp";
 			break;
 		}
-		
 		req.getRequestDispatcher(pagina).forward(req, resp);
 		
 		
@@ -48,14 +53,18 @@ public class EstacionamentoServlet extends HttpServlet {
 			String nascimento = req.getParameter("data");
 			String sexo = req.getParameter("sexo");
 			Calendar nasci = DateUtils.parseCalendar(nascimento);
-			String tipo = req.getParameter("tipo");
-			String placa = req.getParameter("placa");
-			String marca =req.getParameter("marca");
 			String cor = req.getParameter("cor");
-			Connection con = ConexaoFactory.getConnection();
-			Cliente cliente = new Cliente(nome,nascimento,sexo);
-			ClienteBo bo = new ClienteBo();
+			String marca = req.getParameter("marca");
+			String placa = req.getParameter("placa");
+			String tipo = req.getParameter("tipo");
+			int ident = Integer.parseInt(req.getParameter("ident"));
 			
+			Veiculo veiculo = new Veiculo(ident,cor,marca,placa,tipo);
+			
+			Cliente cliente = new Cliente(nome,nasci,sexo,veiculo);
+			ClienteBo bo = new ClienteBo();
+
+			Connection con = ConexaoFactory.getConnection();
 			bo.gravar(cliente,con);
 			
 			req.setAttribute("gravado", "Cliente Cadastrado com Sucesso!");
@@ -63,6 +72,19 @@ public class EstacionamentoServlet extends HttpServlet {
 			
 		}catch(Exception e){
 			req.setAttribute("erro", e.getMessage());
+		}
+				
+		
+		
+	}
+	public void buscarCodigo(HttpServletRequest req){		
+		ClienteBo bo = new ClienteBo();		
+		
+		try{
+			req.setAttribute("numero", bo.buscarCodigo());			
+		}catch(Exception e){
+
+			req.setAttribute("erro","não existe dispesa!");
 		}
 		
 		

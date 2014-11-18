@@ -8,13 +8,9 @@ public class Cliente {
 	private Calendar dt_Nascimento;
 	private String sexo;
 	private Veiculo veiculo;
-	
-	
 	public Cliente(){
 		
 	}
-
-
 	public Cliente(String nome, Calendar dt_Nascimento,
 			String sexo, Veiculo veiculo) {
 		super();
@@ -23,56 +19,36 @@ public class Cliente {
 		this.sexo = sexo;
 		this.veiculo = veiculo;
 	}
-
-
 	public int getId_Cliente() {
 		return id_Cliente;
 	}
-
-
 	public void setId_Cliente(int id_Cliente) {
 		this.id_Cliente = id_Cliente;
 	}
-
-
 	public String getNome() {
 		return nome;
 	}
-
-
 	public void setNome(String nome) {
 		this.nome = nome;
 	}
-
-
 	public Calendar getDt_Nascimento() {
 		return dt_Nascimento;
 	}
-
-
 	public void setDt_Nascimento(Calendar dt_Nascimento) {
 		this.dt_Nascimento = dt_Nascimento;
 	}
-
-
 	public String getSexo() {
 		return sexo;
 	}
-
-
 	public void setSexo(String sexo) {
 		this.sexo = sexo;
 	}
-
-
 	public Veiculo getVeiculo() {
 		return veiculo;
 	}
-
-
 	public void setVeiculo(Veiculo veiculo) {
 		this.veiculo = veiculo;
 	}
-
-
+	
+	
 }
