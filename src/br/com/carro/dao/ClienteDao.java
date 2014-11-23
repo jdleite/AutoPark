@@ -6,10 +6,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
+import br.com.carro.bean.Cadastro;
 import br.com.carro.bean.Cliente;
-import br.com.carro.bean.Veiculo;
 import br.com.carro.conexao.ConexaoFactory;
 
 public class ClienteDao {
@@ -20,26 +21,58 @@ public class ClienteDao {
 	}
 	
 	/*cadasta o cliente no banco de dados*/
-	public void cadastrarCliente(Cliente cliente,Connection con) throws SQLException{
+	public void cadastrarCliente(Cadastro cadastro,Connection con) throws SQLException{
 		String sql = "INSERT INTO T_ESTACI_CLIENTE (ID_CLIENTE,NOME,DT_NASCIMENTO,SEXO) VALUES (SQ_CLIENTE.NEXTVAL,?,?,?)";
+			
 	   try{
 		   con.setAutoCommit(false);
-		   PreparedStatement stmtCliente = con.prepareStatement(sql);
-		   stmtCliente.setString(1,cliente.getNome());
-		   stmtCliente.setDate(2, new Date(cliente.getDt_Nascimento().getTimeInMillis()));		   
-		   stmtCliente.setString(3, cliente.getSexo());
-		   stmtCliente.execute();
+		   PreparedStatement stmtCadastro = con.prepareStatement(sql);
+		   stmtCadastro.setString(1,cadastro.getCliente().getNome());
+		   stmtCadastro.setDate(2, new Date(cadastro.getCliente().getDt_Nascimento().getTimeInMillis()));		   
+		   stmtCadastro.setString(3, cadastro.getCliente().getSexo());		   
+		   stmtCadastro.execute();
 		   con.commit();
-		   stmtCliente.close();
-		   con.setAutoCommit(true);
-		   
-		   	
+		   stmtCadastro.close();
+		   con.setAutoCommit(true);		   	
 	   }catch(SQLException e){
-		   /*faz com que os dados volte ao que era, antes do cadastro*/
 		   con.rollback();
 		   fechar();
 	   }
-	
+	   sql = "INSERT INTO T_ESTACI_VEICULO(ID_VEICULO,ID_CLIENTE,TIPO,PLACA,MARCA,COR)VALUES"+
+       "(SQ_VEICULO.NEXTVAL,?,?,?,?,?)";
+	   try{
+		   con.setAutoCommit(false);
+		   PreparedStatement stmtVeiculo = con.prepareStatement(sql);
+		   stmtVeiculo.setInt(1, cadastro.getCliente().getVeiculo().getIdCliente());
+		   stmtVeiculo.setString(2, cadastro.getCliente().getVeiculo().getTipo());
+		   stmtVeiculo.setString(3, cadastro.getCliente().getVeiculo().getPlaca());
+		   stmtVeiculo.setString(4, cadastro.getCliente().getVeiculo().getMarca());
+		   stmtVeiculo.setString(5, cadastro.getCliente().getVeiculo().getCor());
+		   stmtVeiculo.execute();
+		   con.commit();
+		   stmtVeiculo.close();
+		   con.setAutoCommit(true);
+		   
+	   }catch(SQLException e){
+		   con.rollback();
+		   fechar();
+	   }
+	   
+	   sql = "INSERT INTO T_ESTACI_CADASTRO(ID_CLIENTE,DT_CADASTRO)VALUES"+
+	   "(?,SYSDATE)";
+	    try{
+	    	con.setAutoCommit(false);
+	    	PreparedStatement stmtCadastro = con.prepareStatement(sql);
+	    	stmtCadastro.setInt(1, cadastro.getCliente().getVeiculo().getIdCliente());
+	    	stmtCadastro.execute();
+	    	con.commit();
+	    	stmtCadastro.close();
+	    	con.close();
+	    }catch(SQLException e){
+	    	con.rollback();
+	    	fechar();
+	    }
+			  
 
 	}
 	
@@ -57,12 +90,25 @@ public class ClienteDao {
 			 id = cli.getId_Cliente();
 			resultadoDados.close();
 			estruturaFornecedor.close();
-		
-			
-			
-		
-
 		return id;
 		
 	}
+	
+	public List<Cliente> listarCliente(Connection con) throws SQLException{
+		List<Cliente> lista = new ArrayList<>();
+		String sql = "SELECT NOME FROM T_ESTACI_CLIENTE";
+		
+			PreparedStatement stmt = con.prepareStatement(sql);
+			ResultSet rs = stmt.executeQuery();
+				while(rs.next()){
+					Cliente cliente = new Cliente();
+					cliente.setNome(rs.getString("NOME"));
+					lista.add(cliente);
+						
+				}
+				stmt.close();
+				rs.close();	
+		return lista;
+	}
+	
 }
